@@ -5,15 +5,17 @@
  * Date: 29/04/2019
  * Time: 14:43
  */
-require "../Conexao.php";
+ini_set('memory_limit', '-1');
 
-class Feegow extends Conexao
+require "../Feegow/FeegowEstrutura.php";
+class FeegowToFeegow
 {
-    function __construct($origem, $destino, $profissionais = false)
+    function __construct($bdOrigem,$bdDestino, $profissionais = false)
     {
-        $this->origem = $this->connect($origem);
-        $this->destino = $this->connect($destino);
-        $this->profissionais = $profissionais;
+        $this->bdOrigem = $bdOrigem;
+        $this->bdDestino = $bdDestino;
+        $this->base = new FeegowEstrutura($bdOrigem, $profissionais);
+
     }
 
     function arraytoInsert($array)
@@ -37,20 +39,21 @@ class Feegow extends Conexao
         }
         $data = $data."@";
         $data = str_replace(", @", ")", $data);
-        var_dump($columns);
+        $this->base->connect($this->);
 
     }
 
     function Pacientes()
     {
-        $sql = "select * from pacientes p where p.id = 2";
-        if ($this->profissionais) {
-            $sql = "select p.* from pacientes p inner join agendamentos a on a.pacienteid = p.id where a.profissionalid in ({$this->profissionais})  group by p.id";
-        }
-        $res = $this->origem->query($sql);
-        foreach ($res as $r) {
-            $this->arraytoInsert($r);
+        $pacientes = $this->base->get_pacientes();
+
+        foreach ($pacientes as $p) {
+            $this->arraytoInsert($p);
         }
 
     }
 }
+$a = new FeegowToFeegow("clinicagape");
+
+$a->Pacientes();
+
