@@ -29,9 +29,12 @@ select p.* from pacientes p inner join buiformspreenchidos b on p.id = b.Pacient
 
     function get_all($sql)
     {
+
         $res = $this->conn->query($sql);
+
         $data = [];
         foreach ($res as $r) {
+//            var_dump($r);
             $data [] = $r;
         }
         return $data;
@@ -50,7 +53,7 @@ select p.* from pacientes p inner join buiformspreenchidos b on p.id = b.Pacient
     {
         $sql = "select * from pacientesprescricoes";
         if ($this->profissionalid) {
-            $sql = "select * from pacientesprescricoes p inner join sys_user u on p.sysuser = u.id where u.idintable in ({$this->profissionalid})";
+            $sql = "select p.* from pacientesprescricoes p inner join sys_users u on p.sysuser = u.id where u.idintable in ({$this->profissionalid})";
         }
         return $this->get_all($sql);
     }
@@ -59,7 +62,7 @@ select p.* from pacientes p inner join buiformspreenchidos b on p.id = b.Pacient
     {
         $sql = "select * from pacientesatestados";
         if ($this->profissionalid) {
-            $sql = "select * from pacientesatestados p inner join sys_user u on p.sysuser = u.id where u.idintable in ({$this->profissionalid})";
+            $sql = "select p.* from pacientesatestados p inner join sys_users u on p.sysuser = u.id where u.idintable in ({$this->profissionalid})";
         }
         return $this->get_all($sql);
     }
@@ -68,7 +71,7 @@ select p.* from pacientes p inner join buiformspreenchidos b on p.id = b.Pacient
     {
         $sql = "select * from pacientespedidos";
         if ($this->profissionalid) {
-            $sql = "select * from pacientespedidos p inner join sys_user u on p.sysuser = u.id where u.idintable in ({$this->profissionalid})";
+            $sql = "select p.* from pacientespedidos p inner join sys_users u on p.sysuser = u.id where u.idintable in ({$this->profissionalid})";
         }
         return $this->get_all($sql);
     }
@@ -77,7 +80,7 @@ select p.* from pacientes p inner join buiformspreenchidos b on p.id = b.Pacient
     {
         $sql = "select * from buiforms";
         if ($this->profissionalid) {
-            $sql = "select b.modeloid id from buiformspreenhidos b inner join sys_user u on u.id = b.sysuser where u.idintable in ({$this->profissionalid})";
+            $sql = "select b.modeloid id from buiformspreenhidos b inner join sys_users u on u.id = b.sysuser where u.idintable in ({$this->profissionalid})";
         }
         $res = $this->conn->query($sql);
         $coluans = [];
