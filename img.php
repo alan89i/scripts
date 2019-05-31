@@ -1,6 +1,6 @@
 <?php
 
-$con = mysqli_connect("192.168.0.27", "root", "pipoca453", "dziabas");
+$con = mysqli_connect("192.168.0.27", "root", "pipoca453", "dziabasatualizado");
 $con2 = mysqli_connect("192.168.0.27", "root", "pipoca453", "clinicdziabas");
 $clinica = '6517';
 //$dir1 = scandir('C:\Users\paulo\OneDrive\Documentos\Fotos_vilela');
@@ -25,14 +25,22 @@ function getDirContents($dir, &$results = array())
 
 //print_r(getDirContents('C:\Users\paulo\OneDrive\Documentos\Fotos_vilela'));
 
-$dir = getDirContents('C:\Users\paulo\OneDrive\Documentos\dziabasimg');
+$dir = getDirContents('C:\Users\Desenvolvimento\Desktop\banco de dados\dzibas\25953');
 
 print_r("Iniciando a copia dos arquivos");
 $count = 0;
+$sql = "select * from `24-05-2019-consultas`";
+$res = mysqli_query($con, $sql);
+foreach ($res as $r) {
+    $columns = array_keys($r);
+    break;
+}
 
 foreach ($dir as $d) {
     if (is_file($d)) {
 
+
+        exit();
         $count += 1;
         $file = utf8_encode(explode('\\', $d)[8]);
 
@@ -40,50 +48,53 @@ foreach ($dir as $d) {
 //        $sql = "select b.id pacienteId, a.id, `data` as datahora  from historico a inner join contatos b on b.`Id do Cliente` = a.`Id do Cliente` where a.classe = '$file'";
         // $sql = "select pacienteId, id, concat(fot_data,' ', fot_hora)datahora from fotos_pacientes where fot_nomeFoto = '$file' limit 1";
 //        $sql = "select paccodigo pacienteId, pacarqcodigo id, pacarqdatahora datahora, pacarqdescricao descricao from cadpacarquivos  where pacarqnomearq = '{$file}'";
-        $sql = "select column1 pacienteId from pacientes1 where column29 like '%{$file}%' and column29 is not null";
-        $pacienteid = '';
-        $d = utf8_decode(utf8_encode($d));
-        var_dump($file);
-        $res = mysqli_query($con, $sql);
-        if (mysqli_error($con) !== "") {
-            var_dump(mysqli_error($con));
-        }
+        foreach ($columns as $c) {
 
-//        print_r(utf8_encode($file."\n"));
-        foreach ($res as $i) {
-
-            if (!empty($i['pacienteId'])) {
-
-                $pacienteid = $i['pacienteId'];
-
-
-                $extensao = explode('.', $file)[1];
-                $tipo = 'A';
-
-                if ($extensao == 'jpg' or $extensao == 'png') {
-                    $tipo = 'I';
-                }
-
-                $nome = hash('md5', $file . $clinica . $pacienteid . $count) . '.' . $extensao;
-//                $sql = "insert into arquivos (NomeArquivo, Descricao, Tipo, pacienteid, datahora) values('$nome', '$descricao', '$tipo', $pacienteid, '$datahora')";
-                $sql ="update pacientes set foto = '$nome' where id = {$pacienteid}";
-                mysqli_query($con2, $sql);
-                if (mysqli_error($con2) !== "") {
-                    var_dump(mysqli_error($con2));
-                }
-
-                $folder = "C:\Users\paulo\OneDrive\Documentos\arquivo\img\\" . $nome;
-
-                if ($tipo == 'A') {
-                    $folder = "C:\Users\paulo\OneDrive\Documentos\arquivo\arquivo\\" . $nome;
-                }
-
-                //var_dump($d);
-                rename($d, $folder);
+            $sql = "select column1 pacienteId from pacientes1 where {$c} like '%{$file}%'";
+            $pacienteid = '';
+            $d = utf8_decode(utf8_encode($d));
+            var_dump($file);
+            $res = mysqli_query($con, $sql);
+            if (mysqli_error($con) !== "") {
+                var_dump(mysqli_error($con));
             }
 
-        }
 
+//        print_r(utf8_encode($file."\n"));
+            foreach ($res as $i) {
+
+                if (!empty($i['pacienteId'])) {
+
+                    $pacienteid = $i['pacienteId'];
+
+
+                    $extensao = explode('.', $file)[1];
+                    $tipo = 'A';
+
+                    if ($extensao == 'jpg' or $extensao == 'png') {
+                        $tipo = 'I';
+                    }
+
+                    $nome = hash('md5', $file . $clinica . $pacienteid . $count) . '.' . $extensao;
+//                $sql = "insert into arquivos (NomeArquivo, Descricao, Tipo, pacienteid, datahora) values('$nome', '$descricao', '$tipo', $pacienteid, '$datahora')";
+                    $sql = "update pacientes set foto = '$nome' where id = {$pacienteid}";
+                    mysqli_query($con2, $sql);
+                    if (mysqli_error($con2) !== "") {
+                        var_dump(mysqli_error($con2));
+                    }
+
+                    $folder = "C:\Users\paulo\OneDrive\Documentos\arquivo\img\\" . $nome;
+
+                    if ($tipo == 'A') {
+                        $folder = "C:\Users\paulo\OneDrive\Documentos\arquivo\arquivo\\" . $nome;
+                    }
+
+                    //var_dump($d);
+                    rename($d, $folder);
+                }
+
+            }
+        }
 
     }
 }

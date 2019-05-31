@@ -28,16 +28,57 @@ class ConvertXML extends Conexao
                 $data = simplexml_load_file($f);
                 $columns = [];
                 foreach ($data as $c){
-                    $columns [] = array_keys((array)$c);
+                    $c= json_decode(json_encode($c), true);
+                    $columns  = array_keys($c);
+//                    var_dump($columns);
                     break;
                 }
 
 //                var_dump($columns);
 //                var_dump($table);
 
+                $this->createTable($table, $columns);
+
+                foreach ($data as $d){
+
+                    $this->insertTable($table, $d);
+
+                }
 
             }
         }
+    }
+
+    function insertTable($table, $data){
+        $data= json_decode(json_encode($data), true);
+        $columns = implode(', ',array_keys($data));
+//        $data = implode('", "', $data);
+//        $data = '"'.$data.'"';
+        $columns = str_replace('-', '_', $columns);
+        $d = '(';
+//        var_dump($data);
+        foreach ($data as $a) {
+//            var_dump($a);
+            if ($a == null) {
+                $d = $d . 'null, ';
+            } else {
+                $a = str_replace("'", "\'", $a);
+                $d = $d . "'" . $a . "', ";
+
+            }
+        }
+        $d = $d . "@";
+        $d = str_replace(", @", ")", $d);
+//        var_dump($d);
+//        exit();
+        $sql = "insert into `{$table}` ({$columns}) values {$d}";
+        $this->conn->query($sql);
+        if($this->conn->error!=''){
+            var_dump($sql);
+            var_dump($this->conn->error);
+            exit();
+        }
+
     }
 
     function createTable($table, $columns)
@@ -46,15 +87,20 @@ class ConvertXML extends Conexao
 //        $file = current(explode('.',$file));
 //        $t = simplexml_load_file($table);
 //        $colunas = array_keys($t);
-        var_dump($table);
-        var_dump($columns);
-        exit();
+        $columns = implode(' text, ',$columns);
+        $columns = $columns.' text';
+        $columns = str_replace('-', '_', $columns);
 
 
-//        $sql = "CREATE TABLE IF NOT EXISTS `{$file}` ";
-//        $this->conn->query();
+        $sql = "CREATE TABLE IF NOT EXISTS `{$table}` ({$columns})";
+        $this->conn->query($sql);
+        if($this->conn->error!=''){
+            var_dump($this->conn->error);
+            var_dump($sql);
+        }
+
     }
 }
 
-$a = new ConvertXML('C:\Users\Desenvolvimento\Desktop\banco de dados\Andre Castro\upload\1252\export', 'andrecastro');
+$a = new ConvertXML('C:\Users\Desenvolvimento\Desktop\banco de dados\Andre Castro\upload\1252\export', 'andrecastroxml');
 $a->readXML();
