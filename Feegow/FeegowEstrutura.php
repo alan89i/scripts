@@ -89,7 +89,6 @@ select p.* from pacientes p inner join buiformspreenchidos b on p.id = b.Pacient
             $data = $this->get_dataForm($r);
 //            var_dump($coluna);
 
-
         }
 
     }
@@ -117,6 +116,10 @@ select p.* from pacientes p inner join buiformspreenchidos b on p.id = b.Pacient
         return $colunas;
 
     }
+
+    function setPacientes(){
+
+}
 
 
 }

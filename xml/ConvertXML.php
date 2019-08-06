@@ -40,7 +40,7 @@ class ConvertXML extends Conexao
                 $this->createTable($table, $columns);
 
                 foreach ($data as $d){
-
+                    var_dump($d);
                     $this->insertTable($table, $d);
 
                 }
@@ -58,7 +58,7 @@ class ConvertXML extends Conexao
         $d = '(';
 //        var_dump($data);
         foreach ($data as $a) {
-//            var_dump($a);
+//            var_dump($a['HTML']);
             if ($a == null) {
                 $d = $d . 'null, ';
             } else {
@@ -102,5 +102,5 @@ class ConvertXML extends Conexao
     }
 }
 
-$a = new ConvertXML('C:\Users\Desenvolvimento\Desktop\banco de dados\Andre Castro\upload\1252\export', 'andrecastroxml');
+$a = new ConvertXML('C:\Users\Desenvolvimento\Desktop\banco de dados\Andre Castro\upload\1252\export\new', 'teste');
 $a->readXML();
