@@ -6,8 +6,8 @@ $con2 = mysqli_connect("192.168.0.27", "root", "pipoca453", "clinicsanicorpus");
 $clinica = '6586';
 //$dir1 = scandir('C:\Users\paulo\OneDrive\Documentos\Fotos_vilela');
 //$dir = array_slice($dir1, 2);
-$diretorio_origem = 'C:\Users\Desenvolvimento\Desktop\banco de dados\Dermathos\Importação\2019-07-09\fotos';
-$diretorio_destino = '"C:\Users\Desenvolvimento\Desktop\banco de dados\Dermathos\Importação\\2019-07-09\\fotos_feegow\\"';
+//$diretorio_origem = 'C:\Users\Desenvolvimento\Desktop\banco de dados\Dermathos\Importação\2019-07-09\fotos';
+//$diretorio_destino = '"C:\Users\Desenvolvimento\Desktop\banco de dados\Dermathos\Importação\\2019-07-09\\fotos_feegow\\"';
 
 
 function getDirContents($dir, &$results = array())
@@ -29,7 +29,7 @@ function getDirContents($dir, &$results = array())
 
 //print_r(getDirContents('C:\Users\paulo\OneDrive\Documentos\Fotos_vilela'));
 
-$dir = getDirContents('D:\copia\teste');
+$dir = getDirContents('D:\copia\fotos_faltantes_pt2');
 
 print_r("Iniciando a copia dos arquivos");
 $count = 0;
@@ -52,6 +52,7 @@ foreach ($dir as $d) {
 
         $file = mysqli_real_escape_string($con, $file);
         $file = utf8_decode($file);
+
 //        Foto
         $sql = "select a.id pacienteId, b.createtime from view_pacientes_relacao_copy a inner join image b on b.LINKNUM = a.RECNUM where b.image_feegow = '{$file}' limit 1";
 //        Laudo
@@ -66,7 +67,7 @@ foreach ($dir as $d) {
         }
 //        var_dump(mysqli_num_rows($res));
         if (mysqli_num_rows($res) === 0) {
-//            var_dump($f);
+            var_dump($file);
             var_dump($sql);
 
         }
@@ -91,7 +92,7 @@ foreach ($dir as $d) {
 //                $nome = hash('md5', $file . $clinica . $pacienteid . $count) . '.' . $extensao;
                 $nome = $file;
 //-----------------Laudo do paciente--------------------------------------------------------------------------
-                $sql = "insert into arquivos (NomeArquivo, Descricao, Tipo, pacienteid, datahora) values('$file', '$file', 'I', $pacienteid, '$datahora')";
+                $sql = "insert into arquivos2 (NomeArquivo, Descricao, Tipo, pacienteid, datahora) values('$file', '$file', 'I', $pacienteid, '$datahora')";
 //-------------------------------------------------------------------------------------------
 //-----------------Foto do paciente----------------------------------------------------------
 //                $sql = "update pacientes set foto = '$nome' where id = {$pacienteid}";
@@ -102,7 +103,7 @@ foreach ($dir as $d) {
                 }
 
 
-                $folder = "D:\copia\\teste2\\" . $arq;
+                $folder = "D:\\copia\\imagem\\" . $arq;
 
 //                    if ($tipo == 'A') {
 //                        $folder = "C:\Users\paulo\OneDrive\Documentos\arquivo\arquivo\\" . $nome;
